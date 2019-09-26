@@ -1,0 +1,82 @@
+!!! 5
+html
+  head
+    title nithub!
+    link(rel="stylesheet",href="/css/main.css", type="text/css")
+    script(src="/js/sort.js", type="text/javascript")
+  body
+    #main
+      #header
+        h1 nithub
+      #body
+        p
+          | Nithub mashes up the npm and github apis to organize and rank npm packages.
+          | Browse the source at
+          a(href="https://github.com/marcello3d/nithub") github.com/marcello3d/nithub
+          | .
+        p Tracking #{stats.packages} githubbed packages from registry.npmjs.org (last change spotted ~#{Math.round((new Date-lastModified)/1000/60)}m ago).
+        h2 Sections
+        ol
+          li
+            a(href="#everything") Everything
+          li
+            a(href="#deathmatch") Keyword Deathmatch!
+        a(name="everything")
+        h2 Everything
+        table(class="sortable")
+          tr
+            th rank
+            th package
+            th author
+            th link
+            th(style="text-align:right") watchers
+            th(style="text-align:right") forks
+            th(style="text-align:right") score
+            th scanned
+            th tags
+          - each package,index in packages
+            tr
+              td #{index+1}.
+              td
+                a(href="http://search.npmjs.org/#/"+package.name) #{package.name}
+              td #{package.info.author && package.info.author.name}
+              td
+                a(href=package.git && package.git.info && package.git.info.url || 'http://'+package.git.url) #{package.git && package.git.info && package.git.info.url || 'http://'+package.git.url }
+              td(style="text-align:right") #{package.git && package.git.info && package.git.info.watchers}
+              td(style="text-align:right") #{package.git && package.git.info && package.git.info.forks}
+              td(style="text-align:right") #{package.git && package.git.info && package.git.info.score}
+              td(style="text-align:right") #{package.git && package.git.lastChecked && "~"+Math.round((new Date-package.git.lastChecked)/1000/60)+"m ago"}
+              td
+                - each tag,index in package.tags
+                  - if (index != 0)
+                    |,
+                  - if (tagMap[tag] && tagMap[tag].length>1)
+                    a(href="#tag_"+tag) #{tag}
+                  - else
+                    #{tag}
+        a(name="deathmatch")
+        h2 KEYWORD DEATCHMATCH!
+        - each deathMatch in deathMatches
+          a(name="tag_"+deathMatch.name)
+          h3 `#{deathMatch.name}`
+          table(class="sortable")
+            tr
+              th rank
+              th package
+              th author
+              th link
+              th(style="text-align:right") watchers
+              th(style="text-align:right") forks
+              th(style="text-align:right") score
+            - each package,index in deathMatch.entries
+              tr
+                td #{index+1}
+                td
+                  a(href="http://search.npmjs.org/#/"+package.name) #{package.name}
+                td #{package.info.author && package.info.author.name}
+                td
+                  a(href=package.git && package.git.info && package.git.info.url || 'http://'+package.git.url) #{package.git && package.git.info && package.git.info.url || 'http://'+package.git.url }
+                td(style="text-align:right") #{package.git && package.git.info && package.git.info.watchers}
+                td(style="text-align:right") #{package.git && package.git.info && package.git.info.forks}
+                td(style="text-align:right") #{package.git && package.git.info && package.git.info.score}
+
